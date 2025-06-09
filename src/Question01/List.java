@@ -11,7 +11,7 @@ public class List {
         this.size = 0;
     }
 
-    public void add(Student student) { // Renamed from insertLast to add
+    public void add(Student student) {
         if (size < capacity) {
             data[size++] = student;
         } else {
@@ -27,7 +27,7 @@ public class List {
         System.out.printf("%-15s %-15s %-8s %-5s\n", "Student Number", "Name", "Gender", "Grade");
         System.out.println("---------------------------------------------------");
         for (int i = 0; i < size; i++) {
-            System.out.printf("%-15s %-15s %-8c %-5s\n", // Changed %-8s to %-8c for gender
+            System.out.printf("%-15s %-15s %-8c %-5s\n",
                     data[i].getStudentNumber(), data[i].getName(),
                     data[i].getGender(), data[i].getGrade());
         }
@@ -37,22 +37,21 @@ public class List {
         return size == 0;
     }
 
-    public int listSize() { // Added to match MainApp.java usage, formerly ListSize
+    public int listSize() {
         return size;
     }
 
-    public Student retrieveList(int index) { // Added to match MainApp.java usage
+    public Student retrieveList(int index) {
         if (index >= 0 && index < size) {
             return data[index];
         }
-        return null; // Or throw an exception
+        return null;
     }
 
-    public void sortByGrade() { 
+    public void sortByGrade() {
         for (int i = 0; i < size - 1; i++) {
             int minIndex = i;
             for (int j = i + 1; j < size; j++) {
-               
                 if (data[j].getGrade().compareTo(data[minIndex].getGrade()) < 0) {
                     minIndex = j;
                 }
@@ -64,8 +63,7 @@ public class List {
     }
 
     public List findStudentsByGradeBinary(String targetGrade) {
-
-        List resultList = new List(this.size); 
+        List resultList = new List(this.size);
         int low = 0;
         int high = size - 1;
         int initialMatchIndex = -1;
@@ -89,7 +87,7 @@ public class List {
 
             int tempIndex = initialMatchIndex - 1;
             while (tempIndex >= 0 && data[tempIndex].getGrade().equals(targetGrade)) {
-                resultList.add(data[tempIndex]); // Order in resultList might not be sorted if added this way
+                resultList.add(data[tempIndex]);
                 tempIndex--;
             }
 
@@ -98,7 +96,6 @@ public class List {
                 resultList.add(data[tempIndex]);
                 tempIndex++;
             }
-
         }
         return resultList;
     }
