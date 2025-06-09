@@ -1,80 +1,115 @@
 package Question01;
 
 public class List {
+    private Student[] data;
+    private int size;
+    private int capacity;
 
-    private int maxSize;
-    private int position;
-    private Student[] listEntry;
-
-    public List(int size) {
-        maxSize = size;
-        listEntry = new Student[maxSize];
-        position = -1;
+    public List(int capacity) {
+        this.capacity = capacity;
+        this.data = new Student[capacity];
+        this.size = 0;
     }
 
-    boolean isListFull(){
-        return position==maxSize;
-    }
-    boolean isListEmpty(){
-        return position==-1;
-    }
-
-    int ListSize(){
-        return position+1;
-    }
-
-    void insertLast(Student x) {
-        if (isListFull())
-            System.out.println("Attempt to insert at the end of a full list");
-        else
-            listEntry[++position] = x;
-    }
-
-    Student retrieveList(int p) {
-        if (isListEmpty()) {
-            System.out.println("Attempt to retrieve from an empty list");
-            return null;
-        } else if (p < 0 || p >= listSize()) {
-            System.out.println("Invalid position for retrieval");
-            return null;
+    public void add(Student student) { // Renamed from insertLast to add
+        if (size < capacity) {
+            data[size++] = student;
         } else {
-            return listEntry[p];
+            System.out.println("List is full. Cannot add student.");
         }
     }
 
-
-
-    private int listSize() {
-        return maxSize;
+    public void display() {
+        if (size == 0) {
+            System.out.println("List is empty.");
+            return;
+        }
+        System.out.printf("%-15s %-15s %-8s %-5s\n", "Student Number", "Name", "Gender", "Grade");
+        System.out.println("---------------------------------------------------");
+        for (int i = 0; i < size; i++) {
+            System.out.printf("%-15s %-15s %-8c %-5s\n", // Changed %-8s to %-8c for gender
+                    data[i].getStudentNumber(), data[i].getName(),
+                    data[i].getGender(), data[i].getGrade());
+        }
     }
 
-    void BinarySearch(char key,List studentDetails){
-        int min=0;
-        int max = listEntry.length-1;
-        while (min<=max) {
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-            int mid = (min + max)/2;
-            char midGrade = studentDetails.retrieveList(mid).getGrade();
+    public int listSize() { // Added to match MainApp.java usage, formerly ListSize
+        return size;
+    }
 
-            if (key<midGrade) {
-                max = min - 1;
+    public Student retrieveList(int index) { // Added to match MainApp.java usage
+        if (index >= 0 && index < size) {
+            return data[index];
+        }
+        return null; // Or throw an exception
+    }
 
-            } else if (key>midGrade) {
-                min = max + 1;
+    public void sortByGrade() { 
+        for (int i = 0; i < size - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < size; j++) {
+               
+                if (data[j].getGrade().compareTo(data[minIndex].getGrade()) < 0) {
+                    minIndex = j;
+                }
+            }
+            Student temp = data[minIndex];
+            data[minIndex] = data[i];
+            data[i] = temp;
+        }
+    }
 
+    public List findStudentsByGradeBinary(String targetGrade) {
+
+        List resultList = new List(this.size); 
+        int low = 0;
+        int high = size - 1;
+        int initialMatchIndex = -1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int comparison = data[mid].getGrade().compareTo(targetGrade);
+
+            if (comparison == 0) {
+                initialMatchIndex = mid;
+                break;
+            } else if (comparison < 0) {
+                low = mid + 1;
             } else {
-                System.out.println("Student with "+studentDetails.retrieveList(mid).studentNo );
+                high = mid - 1;
+            }
+        }
 
+        if (initialMatchIndex != -1) {
+            resultList.add(data[initialMatchIndex]);
+
+            int tempIndex = initialMatchIndex - 1;
+            while (tempIndex >= 0 && data[tempIndex].getGrade().equals(targetGrade)) {
+                resultList.add(data[tempIndex]); // Order in resultList might not be sorted if added this way
+                tempIndex--;
             }
 
-            System.out.println("Not Found");
-        }
+            tempIndex = initialMatchIndex + 1;
+            while (tempIndex < size && data[tempIndex].getGrade().equals(targetGrade)) {
+                resultList.add(data[tempIndex]);
+                tempIndex++;
+            }
 
+        }
+        return resultList;
     }
 
-//    String SequentialSearch(List studentDetails){
-//        if (studentDetails)
-//    }
-
-
+    public List findStudentsByGradeSequential(String targetGrade) {
+        List resultList = new List(this.size);
+        for (int i = 0; i < size; i++) {
+            if (data[i].getGrade().equals(targetGrade)) {
+                resultList.add(data[i]);
+            }
+        }
+        return resultList;
+    }
 }
