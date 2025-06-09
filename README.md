@@ -1,1 +1,1 @@
-# Owner-avatar-BECS-21223-Data-Structures-and-Algorithms-LAB-07
+# BECS-21223-Data-Structures-and-Algorithms-LAB-07
